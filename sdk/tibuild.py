@@ -73,11 +73,9 @@ if __name__ == '__main__':
 	parser.add_option("-r","--run",action="store_true",dest="run",default=False,help="run the packaged app after building")
 	parser.add_option("-p","--package",dest="package",default=False,help="build the installation package")
 	parser.add_option("-i","--ignore",dest="ignore_patterns",default="",help="patterns to ignore when packaging, seperated by comma (default: .git,.svn,.gitignore,.cvsignore)")
-	parser.add_option("-j", "--jsobfuscate",action="store_true",dest="js_obfuscate",default=False,help="obfuscate the javascript code within project")
 
 	parser.add_option("-s", "--src",dest="source",help="source folder which contains dist files",metavar="FILE")
 	parser.add_option("-a", "--assets",dest="assets_dir",default=None,help="location of platform assets",metavar="FILE")
-	parser.add_option("--appstore", action="store_true", dest="appstore", default=False, help="Package for app store submission")
 
 	(options, args) = parser.parse_args()
 	if len(args) == 0:
@@ -102,22 +100,16 @@ if __name__ == '__main__':
 		print "Error: unsupported/unknown platform: %s" % options.platform
 		print "Must be one of: %s" % str(ALLOWED_PLATFORMS)
 		sys.exit(1)
-
-	if options.appstore:
-		bundle = True
-		no_install = True
-	else:
-		bundle = options.type == 'bundle'
-		no_install = options.no_install
+	bundle = options.type == 'bundle'
 
 	# Eventually we should detect if we are a packager
 	# and not use any installed components.
 	script_dir = os.path.abspath(os.path.dirname(sys._getframe(0).f_code.co_filename))
 	packager = os.path.exists(path.join(script_dir, '.packager'))
 
-	environment = env.PackagingEnvironment(options.platform, packager, options.appstore)
+	environment = env.PackagingEnvironment(options.platform, packager)
 	app = environment.create_app(appdir)
-	app.stage(path.join(options.destination, app.name), bundle=bundle, no_install=no_install, js_obfuscate=options.js_obfuscate)
+	app.stage(path.join(options.destination, app.name), bundle=bundle, no_install=options.no_install)
 
 	# Always create the package on the packaging server.
 	if options.package or packager:

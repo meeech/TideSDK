@@ -9,14 +9,11 @@ class OSXApp(App):
 	def get_contents_dir(self):
 		return p.join(self.stage_dir, 'Contents')
 
-	def stage(self, stage_dir, bundle, no_install, js_obfuscate):
+	def stage(self, stage_dir, bundle, no_install):
 		if not stage_dir.endswith('.app'):
 			stage_dir += '.app'
 
-		App.stage(self, stage_dir, bundle=bundle, no_install=no_install, js_obfuscate=js_obfuscate)
-
-		defaults_exec = "defaults write " + self.id + " WebKitDeveloperExtras -bool true";
-		os.system(defaults_exec);
+		App.stage(self, stage_dir, bundle=bundle, no_install=no_install)
 
 		self.env.log(u'Copying kboot to %s' % self.contents)
 		self.executable_path = p.join(self.contents, 'MacOS', self.name)
@@ -32,8 +29,7 @@ class OSXApp(App):
 			'APPICON': 'titanium.icns',
 			'APPID': self.id,
 			'APPNIB': 'MainMenu',
-			'APPVER': self.version,
-			'APPVERSHORT': self.version
+			'APPVER': self.version
 		})
 
 		lproj_dir = p.join(self.contents, 'Resources', 'English.lproj')

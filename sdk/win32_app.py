@@ -19,8 +19,8 @@ if p.exists(win32_dir):
 import PyRTF
 
 class Win32App(App):
-	def stage(self, stage_dir, bundle, no_install, js_obfuscate):
-		App.stage(self, stage_dir, bundle=bundle, no_install=no_install, js_obfuscate=js_obfuscate)
+	def stage(self, stage_dir, bundle, no_install):
+		App.stage(self, stage_dir, bundle=bundle, no_install=no_install)
 
 		contents = self.get_contents_dir()
 		self.env.log(u'Copying kboot.exe to %s' % contents);
@@ -352,4 +352,3 @@ def walk_dir(path, current_dir, relative_path=""):
 			newdir = Directory(current_dir.app, file_relative_path)
 			current_dir.add_dir(newdir)
 			walk_dir(file_full_path, newdir, file_relative_path)
-
